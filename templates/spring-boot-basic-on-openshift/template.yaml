@@ -10,7 +10,6 @@ metadata:
     - maven
     - tekton
     - renovate
-    - sonarqube
     - openshift
     - argocd
 spec:
@@ -133,26 +132,6 @@ spec:
         sourcePath: ./gitops
         repoVisibility: public
 
-    - id: sonarqube
-      name: Create a new project on Sonarcloud
-      action: http:backstage:request
-      input:
-        method: 'POST'
-        path: '/proxy/sonarqube/projects/create?name=${{ parameters.appName }}&organization=${{ parameters.orgName }}&project=${{ parameters.orgName }}_${{ parameters.appName }}'
-        headers:
-          content-type: 'application/json'
-
-#    - id: sonarqube
-#      name: Create new project on Sonarqube
-#      action: sonarqube:create-project
-#      input:
-#        baseUrl: 'https://sonarcloud.io'
-#        token: ${{ parameters.sonarToken }}
-#        name: '${{ parameters.appName }}'
-#        key: '${{ parameters.orgName }}_${{ parameters.appName }}'
-#        branch: 'master'
-#        visibility: 'public'
-
     - id: create-argocd-resources
       name: Create ArgoCD Resources
       action: argocd:create-resources
@@ -177,5 +156,3 @@ spec:
       - title: Open the Catalog Info Component
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
-      - title: SonarQube project URL
-        url: ${{ steps['create-sonar-project'].output.projectUrl }}
